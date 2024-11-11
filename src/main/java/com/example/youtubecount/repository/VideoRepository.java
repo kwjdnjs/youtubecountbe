@@ -8,4 +8,5 @@ import java.util.ArrayList;
 public interface VideoRepository extends CrudRepository<Video, Long> {
     @Override
     ArrayList<Video> findAll();
+    ArrayList<Video> findByVideoId(String videoId);
 }

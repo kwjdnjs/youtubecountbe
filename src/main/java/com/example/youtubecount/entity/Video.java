@@ -1,5 +1,6 @@
 package com.example.youtubecount.entity;
 
+import com.example.youtubecount.dto.VideoDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,4 +27,8 @@ public class Video {
 
     @OneToMany(mappedBy = "video")
     private List<View> viewList = new ArrayList<>();
+
+    public static Video createVideo(VideoDto dto) {
+        return new Video(null, dto.getVideoId(), dto.getVideoName(), new ArrayList<>());
+    }
 }
