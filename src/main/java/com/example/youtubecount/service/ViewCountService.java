@@ -3,6 +3,8 @@ package com.example.youtubecount.service;
 import com.example.youtubecount.dto.VideoDto;
 import com.example.youtubecount.dto.ViewDto;
 import com.example.youtubecount.entity.Video;
+import com.example.youtubecount.enumType.ErrorCode;
+import com.example.youtubecount.exception.CustomException;
 import com.example.youtubecount.global.YouTubeAPI;
 import com.example.youtubecount.repository.VideoRepository;
 import com.example.youtubecount.repository.ViewRepository;
@@ -30,12 +32,12 @@ public class ViewCountService {
                 .collect(Collectors.toList());
     }
 
-    public VideoDto addVideo(VideoDto dto) throws Exception {
+    public VideoDto addVideo(VideoDto dto) throws CustomException {
         String videoId = dto.getVideoId();
         if (isVideoAlreadyInDB(videoId)) {
-            throw new Exception("The video is already registered");
+            throw new CustomException(ErrorCode.VIDEO_ALREADY_EXISTS);
         } else if (isVideoNotOnYoutube(videoId)) {
-            throw new Exception("The video does not exist on YouTube");
+            throw new CustomException(ErrorCode.VIDEO_NOT_FOUND_ON_YOUTUBE);
         } else {
             return saveVideoDto(dto);
         }

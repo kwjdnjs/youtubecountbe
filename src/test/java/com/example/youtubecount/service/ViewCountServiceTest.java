@@ -2,6 +2,8 @@ package com.example.youtubecount.service;
 
 import com.example.youtubecount.dto.VideoDto;
 import com.example.youtubecount.entity.Video;
+import com.example.youtubecount.enumType.ErrorCode;
+import com.example.youtubecount.exception.CustomException;
 import com.example.youtubecount.repository.VideoRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +15,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class ViewCountServiceTest {
-    @Autowired
-    VideoRepository videoRepository;
     @Autowired
     ViewCountService viewCountService;
 
@@ -36,21 +36,21 @@ class ViewCountServiceTest {
         Video video = Video.create("ut889MZ9yNo", "kuzuri");
         VideoDto input = VideoDto.create(video);
 
-        Exception exception  = assertThrows(Exception.class, () -> {
+        CustomException exception = assertThrows(CustomException.class, () -> {
             viewCountService.addVideo(input);
         });
 
-        assertEquals("The video is already registered", exception.getMessage());
+        assertEquals(ErrorCode.VIDEO_ALREADY_EXISTS, exception.getErrorCode());
     }
 
     @Test
     void addVideoWithVideoIdNotOnYoutube() {
         Video video = Video.create("ut889MZ9yN", "notFound");
         VideoDto input = VideoDto.create(video);
-        Exception exception  = assertThrows(Exception.class, () -> {
+        CustomException exception  = assertThrows(CustomException.class, () -> {
             viewCountService.addVideo(input);
         });
 
-        assertEquals("The video does not exist on YouTube", exception.getMessage());
+        assertEquals(ErrorCode.VIDEO_NOT_FOUND_ON_YOUTUBE, exception.getErrorCode());
     }
 }
