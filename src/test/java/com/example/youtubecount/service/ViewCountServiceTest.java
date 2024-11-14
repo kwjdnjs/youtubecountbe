@@ -20,37 +20,33 @@ class ViewCountServiceTest {
 
     @Test
     void addVideoWithNewVideoId() {
-        VideoDto input = VideoDto.createVideoDto(new Video(3L,
-                "TnlPtaPxXfc",
-                "That's Life",
-                new ArrayList<>()));
+        Video video = Video.create("TnlPtaPxXfc", "That's Life");
+        VideoDto input = VideoDto.create(video);
 
         assertDoesNotThrow(() -> {
             VideoDto output = viewCountService.addVideo(input);
-            assertEquals(output.toString(), input.toString());
+            // ID 값은 바뀌기 때문에 제외
+            assertEquals(output.getVideoId(), input.getVideoId());
+            assertEquals(output.getVideoName(), input.getVideoName());
         });
     }
 
     @Test
     void addVideoWithExistingVideoId() {
-        VideoDto input = VideoDto.createVideoDto(new Video(3L,
-                "ut889MZ9yNo",
-                "kuzuri",
-                new ArrayList<>()));
+        Video video = Video.create("ut889MZ9yNo", "kuzuri");
+        VideoDto input = VideoDto.create(video);
 
-            Exception exception  = assertThrows(Exception.class, () -> {
-                viewCountService.addVideo(input);
-            });
+        Exception exception  = assertThrows(Exception.class, () -> {
+            viewCountService.addVideo(input);
+        });
 
-            assertEquals("The video is already registered", exception.getMessage());
+        assertEquals("The video is already registered", exception.getMessage());
     }
 
     @Test
     void addVideoWithVideoIdNotOnYoutube() {
-        VideoDto input = VideoDto.createVideoDto(new Video(3L,
-                "ut889MZ9yN",
-                "notFound",
-                new ArrayList<>()));
+        Video video = Video.create("ut889MZ9yN", "notFound");
+        VideoDto input = VideoDto.create(video);
         Exception exception  = assertThrows(Exception.class, () -> {
             viewCountService.addVideo(input);
         });

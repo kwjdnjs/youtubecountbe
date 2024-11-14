@@ -16,7 +16,7 @@ public class ViewDto {
     private String videoName;
     private Long view;
 
-    public static ViewDto createViewDto(View view) {
+    public static ViewDto create(View view) {
         return new ViewDto(
                 view.getId(),
                 view.getVideo().getId(),

@@ -28,7 +28,11 @@ public class Video {
     @OneToMany(mappedBy = "video")
     private List<View> viewList = new ArrayList<>();
 
-    public static Video createVideo(VideoDto dto) {
+    public static Video create(String videoId, String videoName) {
+        return new Video(null, videoId, videoName, new ArrayList<>());
+    }
+
+    public static Video createVideoWithDto(VideoDto dto) {
         return new Video(null, dto.getVideoId(), dto.getVideoName(), new ArrayList<>());
     }
 }

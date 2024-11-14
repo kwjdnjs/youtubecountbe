@@ -15,7 +15,7 @@ public class VideoDto {
     private String videoId;
     private String videoName;
 
-    public static VideoDto createVideoDto(Video video) {
+    public static VideoDto create(Video video) {
         return new VideoDto(
                 video.getId(),
                 video.getVideoId(),

@@ -22,7 +22,7 @@ public class View {
     @Column
     private Long view;
 
-    public static View createViewEntity(Video videoEntity, Long viewCount) {
+    public static View create(Video videoEntity, Long viewCount) {
         return new View(null, videoEntity, viewCount);
     }
 }

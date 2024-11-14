@@ -26,7 +26,7 @@ public class ViewCountService {
     public List<ViewDto> getView() {
         return viewRepository.findAll()
                 .stream()
-                .map(ViewDto::createViewDto)
+                .map(ViewDto::create)
                 .collect(Collectors.toList());
     }
 
@@ -57,8 +57,8 @@ public class ViewCountService {
     }
 
     private VideoDto saveVideoDto(VideoDto dto) {
-        Video video = Video.createVideo(dto);
+        Video video = Video.createVideoWithDto(dto);
         Video saved = videoRepository.save(video);
-        return VideoDto.createVideoDto(saved);
+        return VideoDto.create(saved);
     }
 }

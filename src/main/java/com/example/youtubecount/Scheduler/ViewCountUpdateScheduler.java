@@ -43,7 +43,7 @@ public class ViewCountUpdateScheduler {
     private void updateViewCountInDB(Video videoEntity) {
         try {
             Long viewCount = getViewCountFromYouTube(videoEntity.getVideoId());
-            View viewEntity = View.createViewEntity(videoEntity, viewCount);
+            View viewEntity = View.create(videoEntity, viewCount);
             saveViewEntityInDB(viewEntity);
         } catch (Exception e) {
             log.warn(e.toString());
