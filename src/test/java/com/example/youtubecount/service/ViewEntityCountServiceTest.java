@@ -1,27 +1,24 @@
 package com.example.youtubecount.service;
 
 import com.example.youtubecount.dto.VideoDto;
-import com.example.youtubecount.entity.Video;
+import com.example.youtubecount.entity.VideoEntity;
 import com.example.youtubecount.enumType.ErrorCode;
 import com.example.youtubecount.exception.CustomException;
-import com.example.youtubecount.repository.VideoRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class ViewCountServiceTest {
+class ViewEntityCountServiceTest {
     @Autowired
     ViewCountService viewCountService;
 
     @Test
     void addVideoWithNewVideoId() {
-        Video video = Video.create("TnlPtaPxXfc", "That's Life");
-        VideoDto input = VideoDto.create(video);
+        VideoEntity videoEntity = VideoEntity.create("TnlPtaPxXfc", "That's Life");
+        VideoDto input = VideoDto.create(videoEntity);
 
         assertDoesNotThrow(() -> {
             VideoDto output = viewCountService.addVideo(input);
@@ -33,8 +30,8 @@ class ViewCountServiceTest {
 
     @Test
     void addVideoWithExistingVideoId() {
-        Video video = Video.create("ut889MZ9yNo", "kuzuri");
-        VideoDto input = VideoDto.create(video);
+        VideoEntity videoEntity = VideoEntity.create("ut889MZ9yNo", "kuzuri");
+        VideoDto input = VideoDto.create(videoEntity);
 
         CustomException exception = assertThrows(CustomException.class, () -> {
             viewCountService.addVideo(input);
@@ -45,8 +42,8 @@ class ViewCountServiceTest {
 
     @Test
     void addVideoWithVideoIdNotOnYoutube() {
-        Video video = Video.create("ut889MZ9yN", "notFound");
-        VideoDto input = VideoDto.create(video);
+        VideoEntity videoEntity = VideoEntity.create("ut889MZ9yN", "notFound");
+        VideoDto input = VideoDto.create(videoEntity);
         CustomException exception  = assertThrows(CustomException.class, () -> {
             viewCountService.addVideo(input);
         });

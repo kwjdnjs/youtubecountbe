@@ -1,6 +1,6 @@
 package com.example.youtubecount.dto;
 
-import com.example.youtubecount.entity.Video;
+import com.example.youtubecount.entity.VideoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,11 +15,11 @@ public class VideoDto {
     private String videoId;
     private String videoName;
 
-    public static VideoDto create(Video video) {
+    public static VideoDto create(VideoEntity videoEntity) {
         return new VideoDto(
-                video.getId(),
-                video.getVideoId(),
-                video.getVideoName()
+                videoEntity.getId(),
+                videoEntity.getVideoId(),
+                videoEntity.getVideoName()
         );
     }
 }

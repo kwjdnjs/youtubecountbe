@@ -11,18 +11,18 @@ import lombok.ToString;
 @ToString
 @Getter
 @Entity
-public class View {
+public class ViewEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     @JoinColumn(name = "video_id")
-    private Video video;
+    private VideoEntity videoEntity;
 
     @Column
     private Long view;
 
-    public static View create(Video videoEntity, Long viewCount) {
-        return new View(null, videoEntity, viewCount);
+    public static ViewEntity create(VideoEntity videoEntity, Long viewCount) {
+        return new ViewEntity(null, videoEntity, viewCount);
     }
 }

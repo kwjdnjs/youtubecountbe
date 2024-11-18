@@ -1,7 +1,7 @@
 package com.example.youtubecount.Scheduler;
 
-import com.example.youtubecount.entity.Video;
-import com.example.youtubecount.entity.View;
+import com.example.youtubecount.entity.VideoEntity;
+import com.example.youtubecount.entity.ViewEntity;
 import com.example.youtubecount.global.YouTubeAPI;
 import com.example.youtubecount.repository.VideoRepository;
 import com.example.youtubecount.repository.ViewRepository;
@@ -30,20 +30,20 @@ public class ViewCountUpdateScheduler {
 
     @Scheduled(fixedRate = UPDATE_RATE)
     public void updateViewCount() {
-        List<Video> videoEntityList = getVideoEntityListFromDB();
-        for(Video videoEntity : videoEntityList) {
+        List<VideoEntity> videoEntityEntityList = getVideoEntityListFromDB();
+        for(VideoEntity videoEntity : videoEntityEntityList) {
             updateViewCountInDB(videoEntity);
         }
     }
 
-    private List<Video> getVideoEntityListFromDB() {
+    private List<VideoEntity> getVideoEntityListFromDB() {
         return videoRepository.findAll();
     }
 
-    private void updateViewCountInDB(Video videoEntity) {
+    private void updateViewCountInDB(VideoEntity videoEntity) {
         try {
             Long viewCount = getViewCountFromYouTube(videoEntity.getVideoId());
-            View viewEntity = View.create(videoEntity, viewCount);
+            ViewEntity viewEntity = ViewEntity.create(videoEntity, viewCount);
             saveViewEntityInDB(viewEntity);
         } catch (Exception e) {
             log.warn(e.toString());
@@ -56,7 +56,7 @@ public class ViewCountUpdateScheduler {
         return youTubeAPI.getViewCount();
     }
 
-    private void saveViewEntityInDB(View viewEntity) {
+    private void saveViewEntityInDB(ViewEntity viewEntity) {
         viewRepository.save(viewEntity);
     }
 }

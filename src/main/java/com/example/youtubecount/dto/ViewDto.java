@@ -1,6 +1,6 @@
 package com.example.youtubecount.dto;
 
-import com.example.youtubecount.entity.View;
+import com.example.youtubecount.entity.ViewEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,12 +16,12 @@ public class ViewDto {
     private String videoName;
     private Long view;
 
-    public static ViewDto create(View view) {
+    public static ViewDto create(ViewEntity viewEntity) {
         return new ViewDto(
-                view.getId(),
-                view.getVideo().getId(),
-                view.getVideo().getVideoName(),
-                view.getView()
+                viewEntity.getId(),
+                viewEntity.getVideoEntity().getId(),
+                viewEntity.getVideoEntity().getVideoName(),
+                viewEntity.getView()
         );
     }
 }

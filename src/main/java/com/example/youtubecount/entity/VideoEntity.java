@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @ToString
 @Entity
-public class Video {
+public class VideoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,14 +25,14 @@ public class Video {
     private String videoName;
 
 
-    @OneToMany(mappedBy = "video")
-    private List<View> viewList = new ArrayList<>();
+    @OneToMany(mappedBy = "videoEntity")
+    private List<ViewEntity> viewEntityList = new ArrayList<>();
 
-    public static Video create(String videoId, String videoName) {
-        return new Video(null, videoId, videoName, new ArrayList<>());
+    public static VideoEntity create(String videoId, String videoName) {
+        return new VideoEntity(null, videoId, videoName, new ArrayList<>());
     }
 
-    public static Video createVideoWithDto(VideoDto dto) {
-        return new Video(null, dto.getVideoId(), dto.getVideoName(), new ArrayList<>());
+    public static VideoEntity createVideoEntityWithDto(VideoDto dto) {
+        return new VideoEntity(null, dto.getVideoId(), dto.getVideoName(), new ArrayList<>());
     }
 }

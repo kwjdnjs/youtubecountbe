@@ -7,10 +7,7 @@ import com.example.youtubecount.service.ViewCountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,14 +17,14 @@ public class ViewCountApiController {
     @Autowired
     private ViewCountService viewCountService;
 
-    @GetMapping("/api/view")
-    public ResponseEntity<List<ViewDto>> getView() {
-        List<ViewDto> dtos = viewCountService.getView();
+    @GetMapping("/api/view/{id}")
+    public ResponseEntity<List<ViewDto>> getView(@PathVariable(value="id") String id) {
+        List<ViewDto> dtos = viewCountService.getView(id);
         return ResponseEntity.ok().body(dtos);
     }
 
     @PostMapping("/api/video")
-    public ResponseEntity<?> addVideo(@RequestBody VideoDto dto) throws CustomException {
+    public ResponseEntity<VideoDto> addVideo(@RequestBody VideoDto dto) throws CustomException {
         VideoDto savedDto = viewCountService.addVideo(dto);
         return ResponseEntity.ok().body(savedDto);
     }

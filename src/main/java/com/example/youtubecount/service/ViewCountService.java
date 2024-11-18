@@ -2,7 +2,7 @@ package com.example.youtubecount.service;
 
 import com.example.youtubecount.dto.VideoDto;
 import com.example.youtubecount.dto.ViewDto;
-import com.example.youtubecount.entity.Video;
+import com.example.youtubecount.entity.VideoEntity;
 import com.example.youtubecount.enumType.ErrorCode;
 import com.example.youtubecount.exception.CustomException;
 import com.example.youtubecount.global.YouTubeAPI;
@@ -25,8 +25,26 @@ public class ViewCountService {
     @Value("${youtube.api.key}")
     private String apiKey;
 
-    public List<ViewDto> getView() {
-        return viewRepository.findAll()
+    public List<ViewDto> getView(String videoId) throws CustomException {
+        VideoEntity videoEntity = getVideoEntityFromDB(videoId);
+
+        return getViewCountByVideoEntity(videoEntity);
+    }
+
+    private VideoEntity getVideoEntityFromDB(String videoId) {
+        List<VideoEntity> videoEntityList = videoRepository.findByVideoId(videoId);
+        if (isVideoNotRegistered(videoEntityList)) {
+            throw new CustomException(ErrorCode.VIDEO_NOT_REGISTERED);
+        }
+        return videoEntityList.get(0); // 같은 videoId는 하나만 존재하므로 0
+    }
+
+    private boolean isVideoNotRegistered(List<VideoEntity> videoEntityList) {
+        return videoEntityList.isEmpty();
+    }
+
+    private List<ViewDto> getViewCountByVideoEntity(VideoEntity videoEntity) {
+        return viewRepository.findByVideoEntity(videoEntity)
                 .stream()
                 .map(ViewDto::create)
                 .collect(Collectors.toList());
@@ -38,14 +56,14 @@ public class ViewCountService {
             throw new CustomException(ErrorCode.VIDEO_ALREADY_EXISTS);
         } else if (isVideoNotOnYoutube(videoId)) {
             throw new CustomException(ErrorCode.VIDEO_NOT_FOUND_ON_YOUTUBE);
-        } else {
-            return saveVideoDto(dto);
         }
+
+        return saveVideoDto(dto);
     }
 
     private boolean isVideoAlreadyInDB(String videoId) {
-        List<Video> videoList = videoRepository.findByVideoId(videoId);
-        return !videoList.isEmpty();
+        List<VideoEntity> videoEntityList = videoRepository.findByVideoId(videoId);
+        return !videoEntityList.isEmpty();
     }
 
     private boolean isVideoNotOnYoutube(String videoId) {
@@ -59,8 +77,8 @@ public class ViewCountService {
     }
 
     private VideoDto saveVideoDto(VideoDto dto) {
-        Video video = Video.createVideoWithDto(dto);
-        Video saved = videoRepository.save(video);
+        VideoEntity videoEntity = VideoEntity.createVideoEntityWithDto(dto);
+        VideoEntity saved = videoRepository.save(videoEntity);
         return VideoDto.create(saved);
     }
 }
