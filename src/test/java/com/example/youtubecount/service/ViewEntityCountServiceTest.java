@@ -16,6 +16,16 @@ class ViewEntityCountServiceTest {
     ViewCountService viewCountService;
 
     @Test
+    void getViewCountUnregisteredVideo() {
+        String videoId = "TnlPta";
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            viewCountService.getView(videoId);
+        });
+
+        assertEquals(ErrorCode.VIDEO_NOT_REGISTERED, exception.getErrorCode());
+    }
+
+    @Test
     void addVideoWithNewVideoId() {
         VideoEntity videoEntity = VideoEntity.create("TnlPtaPxXfc", "That's Life");
         VideoDto input = VideoDto.create(videoEntity);
