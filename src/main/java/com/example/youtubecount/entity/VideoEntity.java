@@ -32,7 +32,7 @@ public class VideoEntity {
         return new VideoEntity(null, videoId, videoName, new ArrayList<>());
     }
 
-    public static VideoEntity createVideoEntityWithDto(VideoDto dto) {
+    public static VideoEntity createWithDto(VideoDto dto) {
         return new VideoEntity(null, dto.getVideoId(), dto.getVideoName(), new ArrayList<>());
     }
 }

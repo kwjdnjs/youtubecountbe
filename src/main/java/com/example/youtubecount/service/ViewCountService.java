@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,13 +26,13 @@ public class ViewCountService {
     @Value("${youtube.api.key}")
     private String apiKey;
 
-    public List<ViewDto> getView(String videoId) throws CustomException {
-        VideoEntity videoEntity = getVideoEntityFromDB(videoId);
+    public List<ViewDto> getViewCount(String videoId) throws CustomException {
+        VideoEntity videoEntity = getVideoEntityFromDbByVideoId(videoId);
 
         return getViewCountByVideoEntity(videoEntity);
     }
 
-    private VideoEntity getVideoEntityFromDB(String videoId) {
+    private VideoEntity getVideoEntityFromDbByVideoId(String videoId) {
         List<VideoEntity> videoEntityList = videoRepository.findByVideoId(videoId);
         if (isVideoNotRegistered(videoEntityList)) {
             throw new CustomException(ErrorCode.VIDEO_NOT_REGISTERED);
@@ -54,11 +55,11 @@ public class ViewCountService {
         String videoId = dto.getVideoId();
         if (isVideoAlreadyInDB(videoId)) {
             throw new CustomException(ErrorCode.VIDEO_ALREADY_EXISTS);
-        } else if (isVideoNotOnYoutube(videoId)) {
-            throw new CustomException(ErrorCode.VIDEO_NOT_FOUND_ON_YOUTUBE);
         }
 
-        return saveVideoDto(dto);
+        String videoName = getVideoNameFromYoutube(videoId);
+
+        return createAndSaveVideoEntity(videoId, videoName);
     }
 
     private boolean isVideoAlreadyInDB(String videoId) {
@@ -66,19 +67,37 @@ public class ViewCountService {
         return !videoEntityList.isEmpty();
     }
 
-    private boolean isVideoNotOnYoutube(String videoId) {
+    private String getVideoNameFromYoutube(String videoId) throws CustomException {
         YouTubeAPI youtubeApi = new YouTubeAPI(apiKey, videoId);
+
         try {
             youtubeApi.loadVideoDataFromYouTube();
-            return false;
         } catch (Exception e) {
-            return true;
+            throw new CustomException(ErrorCode.VIDEO_NOT_FOUND_ON_YOUTUBE);
         }
+
+        return youtubeApi.getVideoName();
     }
 
-    private VideoDto saveVideoDto(VideoDto dto) {
-        VideoEntity videoEntity = VideoEntity.createVideoEntityWithDto(dto);
+    private VideoDto createAndSaveVideoEntity(String videoId, String videoName) {
+        VideoEntity videoEntity = VideoEntity.create(videoId, videoName);
         VideoEntity saved = videoRepository.save(videoEntity);
         return VideoDto.create(saved);
+    }
+
+    //테스트 작성 필요
+    public VideoDto deleteVideo(VideoDto dto) throws CustomException {
+        Long id = dto.getId();
+        deleteVideoById(id);
+
+        return dto;
+    }
+
+    private void deleteVideoById(Long id) throws CustomException {
+        try {
+            videoRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.VIDEO_NOT_REGISTERED);
+        }
     }
 }

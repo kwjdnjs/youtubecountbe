@@ -19,7 +19,7 @@ class ViewEntityCountServiceTest {
     void getViewCountUnregisteredVideo() {
         String videoId = "TnlPta";
         CustomException exception = assertThrows(CustomException.class, () -> {
-            viewCountService.getView(videoId);
+            viewCountService.getViewCount(videoId);
         });
 
         assertEquals(ErrorCode.VIDEO_NOT_REGISTERED, exception.getErrorCode());
@@ -27,14 +27,14 @@ class ViewEntityCountServiceTest {
 
     @Test
     void addVideoWithNewVideoId() {
-        VideoEntity videoEntity = VideoEntity.create("TnlPtaPxXfc", "That's Life");
+        VideoEntity videoEntity = VideoEntity.create("TnlPtaPxXfc", null);
         VideoDto input = VideoDto.create(videoEntity);
 
         assertDoesNotThrow(() -> {
             VideoDto output = viewCountService.addVideo(input);
             // ID 값은 바뀌기 때문에 제외
+            // videoName은 따로 불러오기 때문에 제외
             assertEquals(output.getVideoId(), input.getVideoId());
-            assertEquals(output.getVideoName(), input.getVideoName());
         });
     }
 

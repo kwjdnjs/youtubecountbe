@@ -20,7 +20,7 @@ public class ViewEntity {
     private VideoEntity videoEntity;
 
     @Column
-    private Long view;
+    private Long viewCount;
 
     public static ViewEntity create(VideoEntity videoEntity, Long viewCount) {
         return new ViewEntity(null, videoEntity, viewCount);

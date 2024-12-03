@@ -17,9 +17,9 @@ public class ViewCountApiController {
     @Autowired
     private ViewCountService viewCountService;
 
-    @GetMapping("/api/view/{id}")
-    public ResponseEntity<List<ViewDto>> getView(@PathVariable(value="id") String id) {
-        List<ViewDto> dtos = viewCountService.getView(id);
+    @GetMapping("/api/viewcount/{id}")
+    public ResponseEntity<List<ViewDto>> getViewCount(@PathVariable(value="id") String id) {
+        List<ViewDto> dtos = viewCountService.getViewCount(id);
         return ResponseEntity.ok().body(dtos);
     }
 
@@ -27,5 +27,11 @@ public class ViewCountApiController {
     public ResponseEntity<VideoDto> addVideo(@RequestBody VideoDto dto) throws CustomException {
         VideoDto savedDto = viewCountService.addVideo(dto);
         return ResponseEntity.ok().body(savedDto);
+    }
+
+    @DeleteMapping("/api/video")
+    public ResponseEntity<VideoDto> deleteVideo(@RequestBody VideoDto dto) throws CustomException {
+        VideoDto deletedDto = viewCountService.deleteVideo(dto);
+        return ResponseEntity.ok().body(deletedDto);
     }
 }
