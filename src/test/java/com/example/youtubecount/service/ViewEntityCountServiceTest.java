@@ -4,6 +4,7 @@ import com.example.youtubecount.dto.VideoDto;
 import com.example.youtubecount.entity.VideoEntity;
 import com.example.youtubecount.enumType.ErrorCode;
 import com.example.youtubecount.exception.CustomException;
+import com.example.youtubecount.repository.VideoRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class ViewEntityCountServiceTest {
     @Autowired
     ViewCountService viewCountService;
+    @Autowired
+    VideoRepository videoRepository;
 
     @Test
     void getViewCountUnregisteredVideo() {
@@ -59,5 +62,27 @@ class ViewEntityCountServiceTest {
         });
 
         assertEquals(ErrorCode.VIDEO_NOT_FOUND_ON_YOUTUBE, exception.getErrorCode());
+    }
+
+    @Test
+    void deleteVideoSuccess() {
+        VideoEntity videoEntity = videoRepository.findById(1L).orElseThrow(RuntimeException::new);
+        VideoDto input = VideoDto.create(videoEntity);
+
+        VideoDto output = viewCountService.deleteVideo(input);
+
+        assertEquals(input.toString(), output.toString());
+    }
+
+    @Test
+    void deleteUnregisteredVideo() {
+        VideoEntity videoEntity = VideoEntity.create("pqfZYvsTkkk", "");
+        VideoDto input = VideoDto.create(videoEntity);
+
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            VideoDto output = viewCountService.deleteVideo(input);
+        });
+
+        assertEquals(ErrorCode.VIDEO_NOT_REGISTERED, exception.getErrorCode());
     }
 }
