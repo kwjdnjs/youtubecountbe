@@ -6,6 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.Date;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
@@ -21,8 +25,10 @@ public class ViewEntity {
 
     @Column
     private Long viewCount;
+    @Column
+    private ZonedDateTime dateTime;
 
-    public static ViewEntity create(VideoEntity videoEntity, Long viewCount) {
-        return new ViewEntity(null, videoEntity, viewCount);
+    public static ViewEntity create(VideoEntity videoEntity, Long viewCount, ZonedDateTime dateTime) {
+        return new ViewEntity(null, videoEntity, viewCount, dateTime);
     }
 }

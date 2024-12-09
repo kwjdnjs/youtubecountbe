@@ -12,6 +12,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -43,7 +47,8 @@ public class ViewCountUpdateScheduler {
     private void updateViewCountInDB(VideoEntity videoEntity) {
         try {
             Long viewCount = getViewCountFromYouTube(videoEntity.getVideoId());
-            ViewEntity viewEntity = ViewEntity.create(videoEntity, viewCount);
+            ZonedDateTime dateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+            ViewEntity viewEntity = ViewEntity.create(videoEntity, viewCount, dateTime);
             saveViewEntityInDB(viewEntity);
         } catch (Exception e) {
             log.warn(e.toString());

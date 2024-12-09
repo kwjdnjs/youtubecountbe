@@ -85,7 +85,6 @@ public class ViewCountService {
         return VideoDto.create(saved);
     }
 
-    //테스트 작성 필요
     public VideoDto deleteVideo(VideoDto dto) throws CustomException {
         Long id = dto.getId();
         deleteVideoById(id);
