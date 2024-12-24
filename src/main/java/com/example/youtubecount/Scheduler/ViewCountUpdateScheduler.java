@@ -30,7 +30,7 @@ public class ViewCountUpdateScheduler {
     private ViewRepository viewRepository;
 
     //TEST UPDATE_RATE
-    final int UPDATE_RATE = 10000;
+    final int UPDATE_RATE = 100000;
 
     @Scheduled(fixedRate = UPDATE_RATE)
     public void updateViewCount() {
