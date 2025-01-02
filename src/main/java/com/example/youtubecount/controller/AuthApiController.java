@@ -26,7 +26,6 @@ public class AuthApiController {
     /** 회원가입 API */
     @PostMapping("/api/v1/auth/signup")
     public ResponseEntity<?> singUp(@RequestBody UserRequestDto requestDto) {
-        log.info(requestDto.getUsername());
         this.authService.signup(requestDto);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }

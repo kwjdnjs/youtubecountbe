@@ -12,11 +12,8 @@ public class UserEntity extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 50, nullable = false, unique = true)
+    @Column(length = 50, unique = true)
     private String email;
-
-    @Column(length = 50, nullable = false, unique = true)
-    private String contact;
 
     @Column(length = 50, nullable = false, unique = true)
     private String username;
@@ -31,10 +28,9 @@ public class UserEntity extends BaseTimeEntity {
     private AuthEntity auth;
 
     @Builder
-    public UserEntity(String email, String contact, String username, String password, Role role) {
+    public UserEntity(String email, String username, String password, Role role) {
         this.role = role;
         this.email = email;
-        this.contact = contact;
         this.username = username;
         this.password = password;
     }

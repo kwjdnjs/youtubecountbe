@@ -10,7 +10,6 @@ import lombok.Setter;
 public class UserRequestDto {
     private Role role;
     private String email;
-    private String contact;
     private String username;
     private String password;
 
@@ -18,7 +17,6 @@ public class UserRequestDto {
         return UserEntity.builder()
                 .role(this.role)
                 .email(this.email)
-                .contact(this.contact)
                 .username(this.username)
                 .password(this.password)
                 .build();
