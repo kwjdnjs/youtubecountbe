@@ -4,18 +4,18 @@ import com.example.youtubecount.configuration.CustomUserDetails;
 import com.example.youtubecount.dto.AuthRequestDto;
 import com.example.youtubecount.dto.AuthResponseDto;
 import com.example.youtubecount.dto.UserRequestDto;
+import com.example.youtubecount.dto.UserResponseDto;
 import com.example.youtubecount.entity.AuthEntity;
 import com.example.youtubecount.entity.UserEntity;
+import com.example.youtubecount.enumType.ErrorCode;
 import com.example.youtubecount.enumType.Role;
+import com.example.youtubecount.exception.CustomException;
 import com.example.youtubecount.repository.AuthRepository;
 import com.example.youtubecount.repository.UserRepository;
 import com.example.youtubecount.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,43 +32,64 @@ public class AuthService {
     /** 로그인 */
     @Transactional
     public AuthResponseDto login(AuthRequestDto requestDto) {
-        // CHECK USERNAME AND PASSWORD
-        UserEntity user = this.userRepository.findByUsername(requestDto.getUsername()).orElseThrow(
-                () -> new UsernameNotFoundException("해당 유저를 찾을 수 없습니다. username = " + requestDto.getUsername()));
-        if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다. username = " + requestDto.getUsername());
+        UserEntity user = userRepository.findByUsername(requestDto.getUsername()).orElseThrow(
+                () -> new CustomException(ErrorCode.USER_NAME_NOT_FOUND));
+
+        if (isPasswordMismatch(requestDto.getPassword(), user.getPassword())) {
+            throw new CustomException(ErrorCode.PASSWORD_NOT_MATCHED);
         }
 
-        // GENERATE ACCESS_TOKEN AND REFRESH_TOKEN
-        String accessToken = this.jwtTokenProvider.generateAccessToken(
-                new UsernamePasswordAuthenticationToken(new CustomUserDetails(user), user.getPassword()));
-        String refreshToken = this.jwtTokenProvider.generateRefreshToken(
-                new UsernamePasswordAuthenticationToken(new CustomUserDetails(user), user.getPassword()));
+        String accessToken = jwtTokenProvider.generateAccessToken(
+                createUsernamePasswordAuthenticationToken(user));
+        String refreshToken = jwtTokenProvider.generateRefreshToken(
+                createUsernamePasswordAuthenticationToken(user));
 
-        // CHECK IF AUTH ENTITY EXISTS, THEN UPDATE TOKEN
-        if (this.authRepository.existsByUser(user)) {
-            user.getAuth().setAccessToken(accessToken);
-            user.getAuth().setRefreshToken(refreshToken);
-            return new AuthResponseDto(user.getAuth());
+        AuthEntity auth = null;
+        if (isUserExist(user)) {
+            updateUserTokens(user, accessToken, refreshToken);
+            auth = user.getAuth();
+        } else {
+            // 최초 로그인
+            auth = saveAuthEntityAndTokens(user, accessToken, refreshToken);
         }
 
-        // IF NOT EXISTS AUTH ENTITY, SAVE AUTH ENTITY AND TOKEN
-        AuthEntity auth = this.authRepository.save(AuthEntity.builder()
+        return new AuthResponseDto(auth);
+    }
+
+    private boolean isPasswordMismatch(String requestPassword, String savedPassword) {
+        return !passwordEncoder.matches(requestPassword, savedPassword);
+    }
+
+    private UsernamePasswordAuthenticationToken createUsernamePasswordAuthenticationToken(UserEntity user) {
+        return new UsernamePasswordAuthenticationToken(new CustomUserDetails(user), user.getPassword());
+    }
+
+    private boolean isUserExist(UserEntity user) {
+        return authRepository.existsByUser(user);
+    }
+
+    private void updateUserTokens(UserEntity user, String accessToken, String refreshToken) {
+        user.getAuth().setAccessToken(accessToken);
+        user.getAuth().setRefreshToken(refreshToken);
+    }
+
+    private AuthEntity saveAuthEntityAndTokens(UserEntity user, String accessToken, String refreshToken) {
+        return authRepository.save(AuthEntity.builder()
                 .user(user)
                 .tokenType("Bearer")
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build());
-        return new AuthResponseDto(auth);
     }
 
     /** 회원가입 */
     @Transactional
-    public void signup(UserRequestDto requestDto) {
-        // SAVE USER ENTITY
+    public UserResponseDto signup(UserRequestDto requestDto) {
         requestDto.setRole(Role.ROLE_USER);
         requestDto.setPassword(passwordEncoder.encode(requestDto.getPassword()));
-        this.userRepository.save(requestDto.toEntity());
+        UserEntity user = userRepository.save(requestDto.toEntity());
+
+        return UserResponseDto.create(user);
     }
 
     /** Token 갱신 */

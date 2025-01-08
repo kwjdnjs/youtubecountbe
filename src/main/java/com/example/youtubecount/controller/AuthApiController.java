@@ -3,6 +3,7 @@ package com.example.youtubecount.controller;
 import com.example.youtubecount.dto.AuthRequestDto;
 import com.example.youtubecount.dto.AuthResponseDto;
 import com.example.youtubecount.dto.UserRequestDto;
+import com.example.youtubecount.dto.UserResponseDto;
 import com.example.youtubecount.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,15 +20,15 @@ public class AuthApiController {
     /** 로그인 API */
     @PostMapping("/api/v1/auth/login")
     public ResponseEntity<?> login(@RequestBody AuthRequestDto requestDto) {
-        AuthResponseDto responseDto = this.authService.login(requestDto);
+        AuthResponseDto responseDto = authService.login(requestDto);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
     /** 회원가입 API */
     @PostMapping("/api/v1/auth/signup")
     public ResponseEntity<?> singUp(@RequestBody UserRequestDto requestDto) {
-        this.authService.signup(requestDto);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        UserResponseDto responseDto = authService.signup(requestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
     /** 토큰갱신 API */

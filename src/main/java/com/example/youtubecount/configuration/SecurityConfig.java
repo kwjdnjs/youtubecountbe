@@ -2,6 +2,7 @@ package com.example.youtubecount.configuration;
 
 import com.example.youtubecount.security.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,6 +24,9 @@ import java.util.List;
 public class SecurityConfig {
     private final JwtTokenFilter jwtTokenFilter;
 
+    @Value("${cors.allowedOrigins}")
+    String corsOrigin;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
@@ -30,8 +34,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")// 관리자 권한 필요
-                        .requestMatchers("api/v1/auth/signup").permitAll()
-                        .requestMatchers("api/v1/auth/login").permitAll()
+                        .requestMatchers("/api/v1/auth/signup").permitAll()
+                        .requestMatchers("/api/v1/auth/login").permitAll()
                         .requestMatchers("/api/v1/**").authenticated()        // 인증 필요
                         .requestMatchers("/api/**").permitAll()            // 누구나 접근 가능
                 )
@@ -50,7 +54,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // 허용할 출처 (Frontend 도메인)
+        configuration.setAllowedOrigins(List.of(corsOrigin)); // 허용할 출처 (Frontend 도메인)
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 허용할 HTTP 메서드
         configuration.setAllowedHeaders(List.of("*")); // 허용할 헤더
         configuration.setAllowCredentials(true); // 쿠키 인증 허용
