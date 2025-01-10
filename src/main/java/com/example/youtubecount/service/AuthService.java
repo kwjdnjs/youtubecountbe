@@ -31,7 +31,7 @@ public class AuthService {
 
     /** 로그인 */
     @Transactional
-    public AuthResponseDto login(AuthRequestDto requestDto) {
+    public AuthResponseDto login(AuthRequestDto requestDto) throws CustomException {
         UserEntity user = userRepository.findByUsername(requestDto.getUsername()).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_NAME_NOT_FOUND));
 
@@ -84,12 +84,25 @@ public class AuthService {
 
     /** 회원가입 */
     @Transactional
-    public UserResponseDto signup(UserRequestDto requestDto) {
+    public UserResponseDto signup(UserRequestDto requestDto) throws CustomException {
+        if (isUsernameAlreadyExist(requestDto.getUsername()))
+            throw new CustomException(ErrorCode.USER_NAME_ALREADY_EXIST);
+        if (isEmailAlreadyExist(requestDto.getEmail()))
+            throw new CustomException(ErrorCode.EMAIL_ALREADY_EXIST);
+
         requestDto.setRole(Role.ROLE_USER);
         requestDto.setPassword(passwordEncoder.encode(requestDto.getPassword()));
         UserEntity user = userRepository.save(requestDto.toEntity());
 
         return UserResponseDto.create(user);
+    }
+
+    private boolean isUsernameAlreadyExist(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    private boolean isEmailAlreadyExist(String email) {
+        return userRepository.existsByEmail(email);
     }
 
     /** Token 갱신 */

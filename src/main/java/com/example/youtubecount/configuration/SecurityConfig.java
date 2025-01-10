@@ -37,6 +37,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/signup").permitAll()
                         .requestMatchers("/api/v1/auth/login").permitAll()
                         .requestMatchers("/api/v1/**").authenticated()        // 인증 필요
+                        .requestMatchers("/api/viewcount/**").authenticated()
+                        .requestMatchers("/api/video").authenticated()
                         .requestMatchers("/api/**").permitAll()            // 누구나 접근 가능
                 )
                 .sessionManagement(session -> session

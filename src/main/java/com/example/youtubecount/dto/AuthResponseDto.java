@@ -11,11 +11,13 @@ public class AuthResponseDto {
     private String tokenType;
     private String accessToken;
     private String refreshToken;
+    private String username;
 
     @Builder
     public AuthResponseDto(AuthEntity entity) {
-        this.tokenType = entity.getTokenType();
-        this.accessToken = entity.getAccessToken();
-        this.refreshToken = entity.getRefreshToken();
+        tokenType = entity.getTokenType();
+        accessToken = entity.getAccessToken();
+        refreshToken = entity.getRefreshToken();
+        username = entity.getUser().getUsername();
     }
 }
