@@ -51,6 +51,13 @@ public class ViewCountService {
                 .collect(Collectors.toList());
     }
 
+    public List<VideoDto> getVideoList() throws CustomException {
+        return videoRepository.findAll()
+                .stream()
+                .map(VideoDto::create)
+                .collect(Collectors.toList());
+    }
+
     public VideoDto addVideo(VideoDto dto) throws CustomException {
         String videoId = dto.getVideoId();
         if (isVideoAlreadyInDB(videoId)) {

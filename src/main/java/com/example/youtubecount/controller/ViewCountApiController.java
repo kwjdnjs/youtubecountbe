@@ -25,6 +25,12 @@ public class ViewCountApiController {
         return ResponseEntity.ok().body(dtos);
     }
 
+    @GetMapping("/api/videolist")
+    public ResponseEntity<List<VideoDto>> getVideoList() throws CustomException {
+        List<VideoDto> dtos = viewCountService.getVideoList();
+        return ResponseEntity.ok().body(dtos);
+    }
+
     @PostMapping("/api/video")
     public ResponseEntity<VideoDto> addVideo(@RequestBody VideoDto dto) throws CustomException {
         VideoDto savedDto = viewCountService.addVideo(dto);

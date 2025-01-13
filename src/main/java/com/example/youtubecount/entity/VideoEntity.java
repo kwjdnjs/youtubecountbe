@@ -19,7 +19,7 @@ public class VideoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
+    @Column(unique=true)
     private String videoId;
     @Column
     private String videoName;
@@ -28,11 +28,14 @@ public class VideoEntity {
     @OneToMany(mappedBy = "videoEntity")
     private List<ViewEntity> viewEntityList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "video", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserVideoEntity> userVideos = new ArrayList<>();
+
     public static VideoEntity create(String videoId, String videoName) {
-        return new VideoEntity(null, videoId, videoName, new ArrayList<>());
+        return new VideoEntity(null, videoId, videoName, new ArrayList<>(), new ArrayList<>());
     }
 
     public static VideoEntity createWithDto(VideoDto dto) {
-        return new VideoEntity(null, dto.getVideoId(), dto.getVideoName(), new ArrayList<>());
+        return new VideoEntity(null, dto.getVideoId(), dto.getVideoName(), new ArrayList<>(), new ArrayList<>());
     }
 }

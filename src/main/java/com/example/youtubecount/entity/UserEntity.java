@@ -4,6 +4,9 @@ import com.example.youtubecount.enumType.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @NoArgsConstructor
 @Getter
 @Entity
@@ -26,6 +29,9 @@ public class UserEntity extends BaseTimeEntity {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private AuthEntity auth;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserVideoEntity> userVideoEntityList = new ArrayList<>();
 
     @Builder
     public UserEntity(String email, String username, String password, Role role) {
