@@ -15,8 +15,8 @@ public class DataInitializer {
     @Bean
     public CommandLineRunner initData(VideoRepository videoRepository) {
         return args -> {
-            videoRepository.save(VideoEntity.create("ut889MZ9yNo", "kuzuri"));
-            videoRepository.save(VideoEntity.create("Atvsg_zogxo", "study me"));
+            //videoRepository.save(VideoEntity.create("ut889MZ9yNo", "kuzuri"));
+            //videoRepository.save(VideoEntity.create("Atvsg_zogxo", "study me"));
         };
     }
 }
