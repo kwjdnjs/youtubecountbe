@@ -60,7 +60,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(corsOrigin)); // 허용할 출처 (Frontend 도메인)
+        //configuration.setAllowedOrigins(List.of(corsOrigin)); // 허용할 출처 (Frontend 도메인)
+        configuration.setAllowedOrigins(List.of("http://localhost:3000","https://youtubecountfe.vercel.app"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 허용할 HTTP 메서드
         configuration.setAllowedHeaders(List.of("*")); // 허용할 헤더
         configuration.setAllowCredentials(true); // 쿠키 인증 허용

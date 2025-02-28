@@ -32,7 +32,7 @@ public class ViewCountUpdateScheduler {
     //TEST UPDATE_RATE
     final int UPDATE_RATE = 100000;
 
-    @Scheduled(fixedRate = UPDATE_RATE)
+    @Scheduled(cron = "0 0 6,19 * * *", zone = "Asia/Seoul")
     public void updateViewCount() {
         List<VideoEntity> videoEntityEntityList = getVideoEntityListFromDB();
         for(VideoEntity videoEntity : videoEntityEntityList) {
