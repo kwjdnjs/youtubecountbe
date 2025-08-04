@@ -1,10 +1,12 @@
 package com.example.youtubecount.dto;
 
-import com.example.youtubecount.entity.View;
+import com.example.youtubecount.entity.ViewEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import java.time.ZonedDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,14 +16,16 @@ public class ViewDto {
     private Long id;
     private Long videoEntityId;
     private String videoName;
-    private Long view;
+    private Long viewCount;
+    private ZonedDateTime dateTime;
 
-    public static ViewDto createViewDto(View view) {
+    public static ViewDto create(ViewEntity viewEntity) {
         return new ViewDto(
-                view.getId(),
-                view.getVideo().getId(),
-                view.getVideo().getVideoName(),
-                view.getView()
+                viewEntity.getId(),
+                viewEntity.getVideoEntity().getId(),
+                viewEntity.getVideoEntity().getVideoName(),
+                viewEntity.getViewCount(),
+                viewEntity.getDateTime()
         );
     }
 }

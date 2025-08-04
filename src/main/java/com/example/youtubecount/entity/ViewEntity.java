@@ -6,23 +6,29 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.Date;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Getter
 @Entity
-public class View {
+public class ViewEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     @JoinColumn(name = "video_id")
-    private Video video;
+    private VideoEntity videoEntity;
 
     @Column
-    private Long view;
+    private Long viewCount;
+    @Column
+    private ZonedDateTime dateTime;
 
-    public static View createViewEntity(Video videoEntity, Long viewCount) {
-        return new View(null, videoEntity, viewCount);
+    public static ViewEntity create(VideoEntity videoEntity, Long viewCount, ZonedDateTime dateTime) {
+        return new ViewEntity(null, videoEntity, viewCount, dateTime);
     }
 }

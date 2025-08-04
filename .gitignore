@@ -38,3 +38,5 @@ out/
 
 ## env ##
 /src/main/resources/env.properties
+/src/main/resources/env_prod.properties
+/src/main/resources/oauth.properties
